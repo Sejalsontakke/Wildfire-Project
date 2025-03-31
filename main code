@@ -1,0 +1,226 @@
+import pandas as pd
+import seaborn as sns
+import numpy as np
+import matplotlib.pyplot as plt
+
+cbw = cumulative_burnt_weekly
+cbw.info()
+cbw.head()
+cbw.isnull().sum()
+cbw.shape
+cbw.isnull().sum().sum()
+cbw.axes
+cbw.tail()
+cbw.describe()
+
+#Rename the columns
+
+cumulative_burnt_weekly.rename(columns={'Cumulative area burnt by wildfires in 2024': '2024'}, inplace=True)
+cumulative_burnt_weekly.rename(columns={'Cumulative area burnt by wildfires in 2023': '2023'}, inplace=True)
+cumulative_burnt_weekly.rename(columns={'Cumulative area burnt by wildfires in 2022': '2022'}, inplace=True)
+cumulative_burnt_weekly.rename(columns={'Cumulative area burnt by wildfires in 2021': '2021'}, inplace=True)
+cumulative_burnt_weekly.rename(columns={'Cumulative area burnt by wildfires in 2020': '2020'}, inplace=True)
+cumulative_burnt_weekly.rename(columns={'Cumulative area burnt by wildfires in 2019': '2019'}, inplace=True)
+cumulative_burnt_weekly.rename(columns={'Cumulative area burnt by wildfires in 2018': '2018'}, inplace=True)
+cumulative_burnt_weekly.rename(columns={'Cumulative area burnt by wildfires in 2017': '2017'}, inplace=True)
+cumulative_burnt_weekly.rename(columns={'Cumulative area burnt by wildfires in 2016': '2016'}, inplace=True)
+cumulative_burnt_weekly.rename(columns={'Cumulative area burnt by wildfires in 2015': '2015'}, inplace=True)
+cumulative_burnt_weekly.rename(columns={'Cumulative area burnt by wildfires in 2014': '2014'}, inplace=True)
+cumulative_burnt_weekly.rename(columns={'Cumulative area burnt by wildfires in 2013': '2013'}, inplace=True)
+cumulative_burnt_weekly.rename(columns={'Cumulative area burnt by wildfires in 2012': '2012'}, inplace=True)
+
+data_for_boxplot = cumulative_burnt_weekly.drop(['Entity', 'Code', 'Year'], axis=1)
+
+plt.figure(figsize=(12, 8))
+sns.boxplot(data=data_for_boxplot, palette="Set3", linewidth=2.5)
+plt.xticks(rotation=45, fontsize=12)
+plt.yticks(fontsize=12)
+plt.title('Weekly Burnt Area Distribution', fontsize=16)
+plt.xlabel('Year', fontsize=14)
+plt.ylabel('Area Burnt', fontsize=14)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.show()
+
+# Drop unnecessary columns
+data_for_boxplot = cumulative_burnt_weekly.drop(['Entity', 'Code', 'Year'], axis=1)
+
+# Convert numeric columns to appropriate numeric types
+data_for_boxplot = data_for_boxplot.apply(pd.to_numeric, errors='coerce')
+
+# Drop rows with missing values
+data_for_boxplot.dropna(inplace=True)
+
+plt.figure(figsize=(12, 8))
+sns.boxplot(data=data_for_boxplot, palette="Set3", linewidth=2.5)
+plt.xticks(rotation=45, fontsize=12)
+plt.yticks(fontsize=12)
+plt.title('Weekly Burnt Area Distribution', fontsize=16)
+plt.xlabel('Year', fontsize=14)
+plt.ylabel('Area Burnt', fontsize=14)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.show()
+
+numeric_columns = cumulative_burnt_weekly.select_dtypes(include=[np.number]) //removing uneccessary columns//
+
+mean_burned_area_per_week = numeric_columns.mean(axis=0)
+
+plt.figure(figsize=(16, 6))
+plt.plot(mean_burned_area_per_week.index, mean_burned_area_per_week.values, marker='o')
+plt.title('Trend of Burned Area Over Weeks')
+plt.xlabel('Year')
+plt.ylabel('Mean Burned Area')
+plt.xticks(rotation=45)
+plt.show() //calculating the mean//
+
+anb = annual_burnt //annual dataset//
+annual_burnt.head()
+anb.tail()
+anb.axes
+anb.shape
+anb.describe()
+anb.isnull().sum().sum()
+anb.isnull().sum()
+anb.columns
+anb.info()
+
+# Convert 'Year' column to numeric, replacing non-numeric values with NaN
+annual_burnt['Year'] = pd.to_numeric(annual_burnt['Year'], errors='coerce')
+# Remove rows with NaN values in the 'Year' column
+annual_burnt = annual_burnt.dropna(subset=['Year'])
+# Calculate the mean burned area for each year
+mean_per_year = annual_burnt.groupby('Year')['Annual area burnt by wildfires'].mean()
+
+plt.figure(figsize=(12, 6))
+plt.plot(mean_burned_area_per_year.index, mean_burned_area_per_year.values, marker='o')
+plt.title('Trend of Burned Area Over Years')
+plt.xlabel('Year')
+plt.ylabel('Mean Burned Area')
+plt.grid(True)
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# Sort mean burned area by region in descending order
+mean_per_year_sorted = mean_per_year.sort_values(ascending=False)
+
+# Select top 5 countries
+top_5_countries = mean_per_year_sorted.head(5)
+
+plt.figure(figsize=(15, 6))
+top_5_countries.plot(kind='bar')
+plt.xlabel('Country')
+plt.ylabel('Mean Burned Area')
+plt.title('Top 5 Countries by Mean Burned Area')
+plt.xticks(rotation=45)
+plt.show()
+
+# Calculate total burned area by year
+total_burned_area_by_year = annual_burnt.groupby('Year')['Annual area burnt by wildfires'].sum()
+
+total_burned_area_by_year.plot(kind='bar', figsize=(15, 6))
+plt.xlabel('Year')
+plt.ylabel('Total Burned Area')
+plt.title('Total Burned Area by Year')
+plt.xticks(rotation=45)
+plt.show()
+
+# Calculate the mean of the 'Annual area burnt by wildfires' column grouped by 'Year'
+annual_mean_burned_area = annual_burnt.groupby('Year')['Annual area burnt by wildfires'].mean()
+
+plt.figure(figsize=(12, 6))
+plt.plot(annual_mean_burned_area.index, annual_mean_burned_area.values, marker='o')
+plt.xlabel('Year')
+plt.ylabel('Mean Burned Area')
+plt.title('Mean Burned Area by Year')
+plt.show()
+
+#Share Land burnt dataset
+slb = share_land_burnt
+slb.head()
+slb.info()
+slb.describe()
+
+#Annual Area burnt per Wildfire Dataset
+
+# Convert 'Annual area burnt by wildfires' column to numeric
+annual_burnt['Annual area burnt by wildfires'] = pd.to_numeric(annual_burnt['Annual area burnt by wildfires'], errors='coerce')
+
+# Calculate the mean of the 'Annual area burnt by wildfires' column grouped by 'Year'
+annual_mean_burned_area = annual_burnt.groupby('Year')['Annual area burnt by wildfires'].mean()
+
+plt.figure(figsize=(12, 6))
+plt.plot(annual_mean_burned_area.index, annual_mean_burned_area.values, marker='o')
+plt.xlabel('Year')
+plt.ylabel('Mean Burned Area')
+plt.title('Mean Burned Area by Year')
+plt.show()
+annual_burned_area_landcover.head()
+
+annual_burned_area_landcover.tail()
+
+annual_burned_area_landcover.shape
+
+annual_burned_area_landcover.columns
+
+annual_burned_area_landcover.axes
+
+annual_burned_area_landcover.describe()
+
+# Rename the column to match the correct name
+annual_burnt_per_wildfire.rename(columns={'correct_column_name': 'Annual area burnt by wildfires'}, inplace=True)
+
+plt.figure(figsize=(12, 6))
+plt.plot(mean_burned_area_per_year.index[3:], mean_burned_area_per_year.values[3:], marker='o')
+plt.xlabel('Year')
+plt.ylabel('Mean Burned Area per Wildfire')
+plt.title('Mean Burned Area per Wildfire by Year')
+plt.show()
+
+#Distribution Analysis
+plt.figure(figsize=(12, 6))
+plt.hist(annual_burnt_per_wildfire['Annual area burnt per wildfire'], bins=20)
+plt.xlabel('Annual Burned Area per Wildfire')
+plt.ylabel('Frequency')
+plt.title('Distribution of Annual Burned Area per Wildfire')
+plt.show()
+
+#Annual_burned_area_lanndcover dataset
+# Aggregate the data to get the sum of burned areas for each landcover type
+landcover_totals = annual_burned_area_landcover.drop(['Entity', 'Code', 'Year'], axis=1).sum()
+
+colors = ['lightblue', 'lightgreen', 'lightcoral', 'lightskyblue', 'lightpink']
+plt.figure(figsize=(8, 8))
+plt.pie(landcover_totals, labels=landcover_totals.index, autopct='%1.1f%%', startangle=140, colors=colors)
+plt.title('Distribution of Burned Area by Landcover Type')
+plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+plt.show()
+
+# Calculate the sum of burned areas for each land cover type
+landcover_totals = annual_burned_area_landcover.drop(['Entity', 'Code', 'Year'], axis=1).sum()
+
+# Convert the index of landcover_totals to a column
+landcover_totals = landcover_totals.reset_index()
+
+# Rename the columns
+landcover_totals.columns = ['Land Cover Type', 'Burned Area']
+
+plt.figure(figsize=(12, 6))
+sns.barplot(x='Land Cover Type', y='Burned Area', data=landcover_totals)
+plt.xticks(rotation=45)
+plt.title('Distribution of Burned Area Across Land Cover Types')
+plt.xlabel('Land Cover Type')
+plt.ylabel('Burned Area')
+plt.show()
+
+# Exclude non-numeric columns before calculating the correlation matrix
+numeric_data = annual_burned_area_landcover.drop(['Entity', 'Code', 'Year'], axis=1)
+
+# Calculating the correlation matrix
+correlation_matrix = numeric_data.corr()
+
+# Plotting the correlation matrix
+plt.figure(figsize=(10, 8))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
+plt.title('Correlation Matrix of Burned Areas Across Land Cover Types')
+plt.show()
+
